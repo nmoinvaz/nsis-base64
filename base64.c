@@ -1,21 +1,22 @@
 /**
- * Base64 plugin v.001
+ * Base64 plugin v.002
  *
  *   Angelo Dureghello, Trieste, Italy 09-01-2007
+ *   Nathan Moinvaziri, Phoenix, AZ 24-10-2012
  */
 #include <windows.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
 
-#define FORCE_SWITCH  "/FORCE"
-#define NOSAFE_SWITCH "/NOSAFE"
-#define MAX_STRLEN       4098
+#define FORCE_SWITCH    "/FORCE"
+#define NOSAFE_SWITCH   "/NOSAFE"
+#define MAX_STRLEN      4098
 
 /* NSIS stack structure */
 typedef struct _stack_t {
-    struct  _stack_t *next;
-    char        text[MAX_STRLEN];
+    struct _stack_t *next;
+    char            text[MAX_STRLEN];
 } stack_t;
 
 stack_t         **g_stacktop;
@@ -33,7 +34,6 @@ HINSTANCE       g_hInstance;
 static char *encoding_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 static char *decoding_table = NULL;
 static size_t mod_table[] = {0, 2, 1};
-
 
 void build_decoding_table() {
     int i;
@@ -59,8 +59,8 @@ char *base64_encode(const char *data, size_t input_length, size_t *output_length
     if (encoded_data == NULL) 
         return NULL;
 
-    while (i < input_length) {
-
+    while (i < input_length)
+    {
         unsigned int octet_a = i < input_length ? data[i++] : 0;
         unsigned int octet_b = i < input_length ? data[i++] : 0;
         unsigned int octet_c = i < input_length ? data[i++] : 0;
@@ -91,6 +91,7 @@ char *base64_decode(const char *data, size_t input_length, size_t *output_length
         return NULL;
 
     *output_length = input_length / 4 * 3;
+    
     if (data[input_length - 1] == '=') (*output_length)--;
     if (data[input_length - 2] == '=') (*output_length)--;
 
@@ -98,8 +99,8 @@ char *base64_decode(const char *data, size_t input_length, size_t *output_length
     if (decoded_data == NULL) 
         return NULL;
 
-    while (i < input_length) {
-
+    while (i < input_length)
+    {
         unsigned int sextet_a = data[i] == '=' ? 0 & i++ : decoding_table[data[i++]];
         unsigned int sextet_b = data[i] == '=' ? 0 & i++ : decoding_table[data[i++]];
         unsigned int sextet_c = data[i] == '=' ? 0 & i++ : decoding_table[data[i++]];
@@ -123,13 +124,13 @@ int popstring(char *str)
 {
     stack_t *th;
     
-    if (!g_stacktop || !*g_stacktop) return 1;
+    if (!g_stacktop || !*g_stacktop)
+        return 1;
     
-    th=(*g_stacktop);
+    th = (*g_stacktop);
     lstrcpy(str,th->text);
     *g_stacktop = th->next;
     GlobalFree((HGLOBAL)th);
-    
     return 0;
 }
 
@@ -138,13 +139,14 @@ void pushstring(const char *str)
 {
     stack_t *th;
     
-    if (!g_stacktop) return;
+    if (!g_stacktop)
+        return;
     
     th=(stack_t*)GlobalAlloc(GPTR, sizeof(stack_t)+g_stringsize);
     lstrcpyn(th->text,str,g_stringsize);
-    th->next=*g_stacktop;
+    th->next = *g_stacktop;
     
-    *g_stacktop=th;
+    *g_stacktop = th;
 }
 
 void __declspec(dllexport) Encode(HWND hwndParent, int string_size, char *variables, stack_t **stacktop)
@@ -167,7 +169,7 @@ void __declspec(dllexport) Encode(HWND hwndParent, int string_size, char *variab
 void __declspec(dllexport) Decode(HWND hwndParent, int string_size, char *variables, stack_t **stacktop)
 {
     char string_to_decode [MAX_STRLEN] ={0};
-    int string_to_decode_len= 0;
+    int string_to_decode_len = 0;
     char *string_decoded = NULL;
     int string_decoded_len = 0;
 
@@ -185,6 +187,6 @@ void __declspec(dllexport) Decode(HWND hwndParent, int string_size, char *variab
 
 BOOL WINAPI DllMain(HANDLE hInst, ULONG ul_reason_for_call, LPVOID lpReserved)
 {
-    g_hInstance=hInst;
+    g_hInstance = hInst;
     return TRUE;
 }
