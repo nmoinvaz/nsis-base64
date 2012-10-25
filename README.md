@@ -1,8 +1,8 @@
 Base64 plugin for NSIS
 
-This is a base64 plugin for NSIS based on [dselkirk's base64 code](http://forums.winamp.com/showthread.php?s=&threadid=149880&highlight=base64) and has been modified:
+This is a base64 plugin for NSIS is based on [dselkirk's base64 code](http://forums.winamp.com/showthread.php?s=&threadid=149880&highlight=base64) and has been modified:
 
-+ Compiled with Visual Studio 6 so it works with all versions of Windows that NSIS supports including Windows 95
++ Compiled with Visual Studio 6 and works with all versions of Windows that NSIS supports including Windows 95
 + Supports base64 padding
 
 ```
